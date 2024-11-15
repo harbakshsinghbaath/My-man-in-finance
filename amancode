@@ -176,7 +176,7 @@
         <input type="text" id="newCategory" class="input-category" placeholder="Add your own category">
     </div>
 
-    <button class="proceed-btn" onclick="redirectToPayment()">Proceed to Payment Screen</button>
+    <button class="proceed-btn" onclick="redirectToGooglePay()">Proceed to Payment Screen</button>
 </div>
 
 <script>
@@ -239,9 +239,9 @@
         displayCategories(); // Reload the displayed categories
     }
 
-    // Redirect to Twitter when Proceed button is clicked
-    function redirectToPayment() {
-        window.location.href = "https://twitter.com";
+    // Redirect to Google Pay when Proceed button is clicked
+    function redirectToGooglePay() {
+        window.location.href = "https://pay.google.com";  // Redirect to Google Pay homepage
     }
 
     // Initially display the categories when the page loads
