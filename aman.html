@@ -278,10 +278,10 @@
         const amount = document.getElementById('amount').value;
         const selectedCategory = document.querySelector('.category.selected-category');
 
-        // Check if amount and category are valid
-        if (!amount || !selectedCategory) {
-            alert('Please ensure that both the amount and category are selected.');
-            return; // Do nothing if not valid
+        // Check if amount is valid before proceeding
+        if (!amount || amount <= 0) {
+            alert('Please enter a valid amount.');
+            return; // Do nothing if the amount is invalid
         }
 
         // Update the total spent for the selected category
@@ -298,16 +298,11 @@
         }
     }
 
-    // Ensure the amount entered is a positive rational number
-    document.getElementById('amount').addEventListener('input', function() {
-        checkAmountValidity();
-    });
-
-    function checkAmountValidity() {
-        const amount = document.getElementById('amount').value;
+    // Ensure the category is selected before enabling the proceed button
+    function checkCategorySelection() {
         const proceedBtn = document.getElementById('proceedBtn');
         const selectedCategory = document.querySelector('.category.selected-category');
-        if (amount > 0 && selectedCategory) {
+        if (selectedCategory) {
             proceedBtn.classList.add('enabled');
         } else {
             proceedBtn.classList.remove('enabled');
@@ -317,7 +312,7 @@
     // Initialize category selection state and display categories on page load
     document.addEventListener('DOMContentLoaded', function() {
         displayCategories();
-        checkAmountValidity(); // Ensure button starts in correct state
+        checkCategorySelection(); // Ensure button starts in correct state
     });
 </script>
 
