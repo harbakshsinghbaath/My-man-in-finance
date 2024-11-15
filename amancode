@@ -166,7 +166,7 @@
 
     <!-- Input field for Amount -->
     <div class="amount-section">
-        <input type="number" id="amount" placeholder="Amount in USD" class="input-category">
+        <input type="number" id="amount" placeholder="Amount in USD" class="input-category" min="0.01" step="any">
     </div>
 
     <!-- Categories section -->
@@ -268,22 +268,56 @@
         window.location.href = "https://pay.google.com";  // Redirect to Google Pay homepage
     }
 
-    // Enable/Disable Proceed button based on category selection
-    function checkCategorySelection() {
-        const categories = getCategories();
+    // Ensure the amount entered is a positive rational number
+    document.getElementById('amount').addEventListener('input', function() {
+        const amountInput = document.getElementById('amount');
+        const amount = parseFloat(amountInput.value);
+
+        // Check if the amount is a positive rational number (not an integer)
+        if (amount <= 0 || amount === Math.floor(amount)) {
+            amountInput.setCustomValidity("Please enter a valid positive amount (non-integer).");
+            amountInput.reportValidity();
+        } else {
+            amountInput.setCustomValidity("");
+        }
+    });
+
+    // Function to check if amount is valid before proceeding
+    function checkAmountValidity() {
+        const amountInput = document.getElementById('amount');
+        const amount = parseFloat(amountInput.value);
         const proceedBtn = document.getElementById('proceedBtn');
-        
-        // Enable button only if at least one category is selected
-        if (categories.length > 0) {
+
+        // Enable the Proceed button only if the amount is valid (positive and rational)
+        if (amount > 0 && amount !== Math.floor(amount)) {
             proceedBtn.classList.add('enabled');
         } else {
             proceedBtn.classList.remove('enabled');
         }
     }
 
-    // Initially display the categories and check if a category is selected
+    // Call checkAmountValidity when amount changes
+    document.getElementById('amount').addEventListener('input', checkAmountValidity);
+
+    // Function to enable Proceed button if valid category is selected
+    function checkCategorySelection() {
+        const selectedCategory = document.querySelector('.category.selected-category');
+        const proceedBtn = document.getElementById('proceedBtn');
+        const amountInput = document.getElementById('amount');
+        const amount = parseFloat(amountInput.value);
+
+        // Enable the button only if a category is selected and the amount is valid
+        if (selectedCategory && amount > 0 && amount !== Math.floor(amount)) {
+            proceedBtn.classList.add('enabled');
+        } else {
+            proceedBtn.classList.remove('enabled');
+        }
+    }
+
+    // Initialize the validation check for both amount and category
     displayCategories();
     checkCategorySelection(); // Ensure button is correctly enabled/disabled
+    checkAmountValidity(); // Ensure amount validity
 </script>
 
 </body>
