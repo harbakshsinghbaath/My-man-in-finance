@@ -61,11 +61,33 @@
             margin: 8px;
             cursor: pointer;
             font-size: 14px;
+            display: inline-block;
+            position: relative;
             transition: background-color 0.3s;
         }
 
         .category:hover {
             background-color: #1D8F42;
+        }
+
+        .category button {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            padding: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            width: 24px;
+            height: 24px;
+            display: none;
+        }
+
+        .category:hover button {
+            display: block;
         }
 
         .category-form {
@@ -138,10 +160,15 @@
     </div>
 
     <!-- Categories section -->
-    <div class="category-section">
+    <div class="category-section" id="categorySection">
         <h2>Select Category</h2>
-        <div class="category">Food</div>
-        <div class="category">Clothes</div>
+        <!-- Default categories -->
+        <div class="category">Food
+            <button onclick="deleteCategory('Food')">X</button>
+        </div>
+        <div class="category">Clothes
+            <button onclick="deleteCategory('Clothes')">X</button>
+        </div>
     </div>
 
     <!-- Custom Category input form -->
@@ -153,25 +180,72 @@
 </div>
 
 <script>
-    // Add a new custom category dynamically
+    // Retrieve categories from localStorage or initialize if not present
+    function getCategories() {
+        const storedCategories = localStorage.getItem('categories');
+        return storedCategories ? JSON.parse(storedCategories) : [];
+    }
+
+    // Save categories to localStorage
+    function saveCategories(categories) {
+        localStorage.setItem('categories', JSON.stringify(categories));
+    }
+
+    // Display categories dynamically
+    function displayCategories() {
+        const categoryContainer = document.getElementById('categorySection');
+        const categories = getCategories();
+
+        // Remove all current categories (to prevent duplicates)
+        categoryContainer.querySelectorAll('.category:not(:first-child)').forEach(category => category.remove());
+
+        // Add each category to the display
+        categories.forEach(category => {
+            const categoryElement = document.createElement('div');
+            categoryElement.classList.add('category');
+            categoryElement.textContent = category;
+
+            // Create delete button for each category
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'X';
+            deleteButton.onclick = function () {
+                deleteCategory(category);
+            };
+            categoryElement.appendChild(deleteButton);
+
+            categoryContainer.appendChild(categoryElement);
+        });
+    }
+
+    // Add a new custom category
     document.getElementById('newCategory').addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {
-            var newCategory = event.target.value;
+            const newCategory = event.target.value.trim();
             if (newCategory) {
-                var categoryContainer = document.querySelector('.category-section');
-                var newCategoryElement = document.createElement('div');
-                newCategoryElement.classList.add('category');
-                newCategoryElement.textContent = newCategory;
-                categoryContainer.appendChild(newCategoryElement);
+                const categories = getCategories();
+                categories.push(newCategory); // Add the new category
+                saveCategories(categories); // Save to localStorage
                 event.target.value = ''; // Clear the input field
+                displayCategories(); // Reload the displayed categories
             }
         }
     });
+
+    // Delete a category
+    function deleteCategory(categoryToDelete) {
+        const categories = getCategories();
+        const updatedCategories = categories.filter(category => category !== categoryToDelete); // Remove category
+        saveCategories(updatedCategories); // Save updated categories to localStorage
+        displayCategories(); // Reload the displayed categories
+    }
 
     // Redirect to Twitter when Proceed button is clicked
     function redirectToPayment() {
         window.location.href = "https://twitter.com";
     }
+
+    // Initially display the categories when the page loads
+    displayCategories();
 </script>
 
 </body>
