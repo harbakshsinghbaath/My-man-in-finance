@@ -70,6 +70,13 @@
 
         .category:hover {
             background-color: #1D8F42;
+            transform: scale(1.1);  /* Enlarge the category on hover */
+        }
+
+        .category.selected-category {
+            transform: scale(1.2); /* Enlarge the selected category */
+            border: 3px solid gold; /* Add a gold border to the selected category */
+            background-color: #34A853; /* Keep original background color */
         }
 
         .category button {
@@ -113,10 +120,17 @@
             margin-top: 20px;
             font-weight: bold;
             width: 100%;
+            opacity: 0.5; /* Initially disabled */
+           
         }
 
         .proceed-btn:hover {
             background-color: #F9A900;
+        }
+
+        .proceed-btn.enabled {
+            opacity: 1; /* Enable button when category is selected */
+            pointer-events: auto; /* Allow clicks */
         }
 
         .input-category {
