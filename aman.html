@@ -1,1 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter Amount and Category</title>
+    <style>
+        /* Global Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+            color: #202124;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            padding: 50px;
+            background-color: #efeded;
+            border-radius: 10px;
+            box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
+            font-size: 20px;
+            
+        }
+
+        .google-btn {
+            background-color: #4285F4;
+            color: white;
+            font-size: 16px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        .google-btn:hover {
+            background-color: #3367D6;
+        }
+
+        .category-section {
+            margin-top: 20px;
+        }
+
+        .category {
+            background-color: #34A853;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 20px;
+            margin: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-block;
+            position: relative;
+            transition: background-color 0.3s;
+        }
+
+        .category:hover {
+            background-color: #1D8F42;
+        }
+
+        .category button {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            padding: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            width: 24px;
+            height: 24px;
+            display: none;
+        }
+
+        .category:hover button {
+            display: block;
+        }
+
+        .category-form {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .amount-section {
+            margin-top: 20px;
+        }
+
+        .proceed-btn {
+            background-color: #FBBC05;
+            color: white;
+            font-size: 16px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        .proceed-btn:hover {
+            background-color: #F9A900;
+        }
+
+        .input-category {
+            margin-top: 15px;
+            display: inline-block;
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+
+            .google-btn, .proceed-btn {
+                width: 100%;
+            }
+
+            .category {
+                font-size: 12px;
+                padding: 8px 16px;
+            }
+
+            .amount-section input {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body style="background-image: url('bg2.jpg'); background-repeat: no-repeat;background-size: cover;">
+
+
+<div class="container">
+    <h1>Enter the Amount to be Paid</h1>
+
+    <!-- Input field for Amount -->
+    <div class="amount-section">
+        <input type="number" id="amount" placeholder="Amount in INR" class="input-category">
+    </div>
+
+    <!-- Categories section -->
+    <div class="category-section" id="categorySection">
+        <h2>Select Category</h2>
+        <!-- Default categories -->
+        <div class="category">Food
+            <button onclick="deleteCategory('Food')">X</button>
+        </div>
+        <div class="category">Clothes
+            <button onclick="deleteCategory('Clothes')">X</button>
+        </div>
+    </div>
+
+    <!-- Custom Category input form -->
+    <div class="category-form">
+        <input type="text" id="newCategory" class="input-category" placeholder="Add your own category">
+    </div>
+
+    <button class="proceed-btn" onclick="redirectToGooglePay()">Proceed to Payment Screen</button>
+</div>
+
+<script>
+    // Retrieve categories from localStorage or initialize if not present
+    function getCategories() {
+        const storedCategories = localStorage.getItem('categories');
+        return storedCategories ? JSON.parse(storedCategories) : [];
+    }
+
+    // Save categories to localStorage
+    function saveCategories(categories) {
+        localStorage.setItem('categories', JSON.stringify(categories));
+    }
+
+    // Display categories dynamically
+    function displayCategories() {
+        const categoryContainer = document.getElementById('categorySection');
+        const categories = getCategories();
+
+        // Remove all current categories (to prevent duplicates)
+        categoryContainer.querySelectorAll('.category:not(:first-child)').forEach(category => category.remove());
+
+        // Add each category to the display
+        categories.forEach(category => {
+            const categoryElement = document.createElement('div');
+            categoryElement.classList.add('category');
+            categoryElement.textContent = category;
+
+            // Create delete button for each category
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'X';
+            deleteButton.onclick = function () {
+                deleteCategory(category);
+            };
+            categoryElement.appendChild(deleteButton);
+
+            categoryContainer.appendChild(categoryElement);
+        });
+    }
+
+    // Add a new custom category
+    document.getElementById('newCategory').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            const newCategory = event.target.value.trim();
+            if (newCategory) {
+                const categories = getCategories();
+                categories.push(newCategory); // Add the new category
+                saveCategories(categories); // Save to localStorage
+                event.target.value = ''; // Clear the input field
+                displayCategories(); // Reload the displayed categories
+            }
+        }
+    });
+
+    // Delete a category
+    function deleteCategory(categoryToDelete) {
+        const categories = getCategories();
+        const updatedCategories = categories.filter(category => category !== categoryToDelete); // Remove category
+        saveCategories(updatedCategories); // Save updated categories to localStorage
+        displayCategories(); // Reload the displayed categories
+    }
+
+    // Redirect to Google Pay when Proceed button is clicked
+    function redirectToGooglePay() {
+        window.location.href = "https://pay.google.com";  // Redirect to Google Pay homepage
+    }
+
+    // Initially display the categories when the page loads
+    displayCategories();
+</script>
+
+</body>
+</html>
