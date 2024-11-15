@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter Amount and Category</title>
+    <style>
+        /* Global Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+            color: #202124;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .google-btn {
+            background-color: #4285F4;
+            color: white;
+            font-size: 16px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        .google-btn:hover {
+            background-color: #3367D6;
+        }
+
+        .category-section {
+            margin-top: 20px;
+        }
+
+        .category {
+            background-color: #34A853;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 20px;
+            margin: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .category:hover {
+            background-color: #1D8F42;
+        }
+
+        .category-form {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .amount-section {
+            margin-top: 20px;
+        }
+
+        .proceed-btn {
+            background-color: #FBBC05;
+            color: white;
+            font-size: 16px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        .proceed-btn:hover {
+            background-color: #F9A900;
+        }
+
+        .input-category {
+            margin-top: 15px;
+            display: inline-block;
+            width: 100%;
+            max-width: 250px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+
+            .google-btn, .proceed-btn {
+                width: 100%;
+            }
+
+            .category {
+                font-size: 12px;
+                padding: 8px 16px;
+            }
+
+            .amount-section input {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Enter the Amount to be Paid</h1>
+
+    <!-- Input field for Amount -->
+    <div class="amount-section">
+        <input type="number" id="amount" placeholder="Amount in USD" class="input-category">
+    </div>
+
+    <!-- Categories section -->
+    <div class="category-section">
+        <h2>Select Category</h2>
+        <div class="category">Food</div>
+        <div class="category">Clothes</div>
+    </div>
+
+    <!-- Custom Category input form -->
+    <div class="category-form">
+        <input type="text" id="newCategory" class="input-category" placeholder="Add your own category">
+    </div>
+
+    <button class="proceed-btn" onclick="redirectToPayment()">Proceed to Payment Screen</button>
+</div>
+
+<script>
+    // Add a new custom category dynamically
+    document.getElementById('newCategory').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            var newCategory = event.target.value;
+            if (newCategory) {
+                var categoryContainer = document.querySelector('.category-section');
+                var newCategoryElement = document.createElement('div');
+                newCategoryElement.classList.add('category');
+                newCategoryElement.textContent = newCategory;
+                categoryContainer.appendChild(newCategoryElement);
+                event.target.value = ''; // Clear the input field
+            }
+        }
+    });
+
+    // Redirect to Twitter when Proceed button is clicked
+    function redirectToPayment() {
+        window.location.href = "https://twitter.com";
+    }
+</script>
+
+</body>
+</html>
