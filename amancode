@@ -63,11 +63,18 @@
             font-size: 14px;
             display: inline-block;
             position: relative;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.3s ease-in-out, border 0.3s;
         }
 
         .category:hover {
             background-color: #1D8F42;
+            transform: scale(1.1);  /* Enlarge the category on hover */
+        }
+
+        .category.selected-category {
+            transform: scale(1.2); /* Enlarge the selected category */
+            border: 3px solid gold; /* Add a gold border to the selected category */
+            background-color: #34A853; /* Keep original background color */
         }
 
         .category button {
@@ -111,10 +118,13 @@
             margin-top: 20px;
             font-weight: bold;
             width: 100%;
+            opacity: 0.5; /* Initially disabled */
+            pointer-events: none; /* Prevent clicks */
         }
 
-        .proceed-btn:hover {
-            background-color: #F9A900;
+        .proceed-btn.enabled {
+            opacity: 1; /* Enable button when category is selected */
+            pointer-events: auto; /* Allow clicks */
         }
 
         .input-category {
@@ -163,10 +173,10 @@
     <div class="category-section" id="categorySection">
         <h2>Select Category</h2>
         <!-- Default categories -->
-        <div class="category">Food
+        <div class="category" onclick="toggleCategorySelection(this)">Food
             <button onclick="deleteCategory('Food')">X</button>
         </div>
-        <div class="category">Clothes
+        <div class="category" onclick="toggleCategorySelection(this)">Clothes
             <button onclick="deleteCategory('Clothes')">X</button>
         </div>
     </div>
@@ -176,7 +186,7 @@
         <input type="text" id="newCategory" class="input-category" placeholder="Add your own category">
     </div>
 
-    <button class="proceed-btn" onclick="redirectToGooglePay()">Proceed to Payment Screen</button>
+    <button class="proceed-btn" id="proceedBtn" onclick="redirectToGooglePay()">Proceed to Payment Screen</button>
 </div>
 
 <script>
@@ -213,8 +223,20 @@
             };
             categoryElement.appendChild(deleteButton);
 
+            categoryElement.onclick = function () {
+                toggleCategorySelection(categoryElement);
+            };
+
             categoryContainer.appendChild(categoryElement);
         });
+    }
+
+    // Toggle the selected category (change color, scale, and add border)
+    function toggleCategorySelection(categoryElement) {
+        const categories = document.querySelectorAll('.category');
+        categories.forEach(category => category.classList.remove('selected-category')); // Remove selected from all
+        categoryElement.classList.add('selected-category'); // Add selected class to the clicked category
+        checkCategorySelection(); // Check if a category is selected
     }
 
     // Add a new custom category
@@ -227,6 +249,7 @@
                 saveCategories(categories); // Save to localStorage
                 event.target.value = ''; // Clear the input field
                 displayCategories(); // Reload the displayed categories
+                checkCategorySelection(); // Check if a category is selected
             }
         }
     });
@@ -237,6 +260,7 @@
         const updatedCategories = categories.filter(category => category !== categoryToDelete); // Remove category
         saveCategories(updatedCategories); // Save updated categories to localStorage
         displayCategories(); // Reload the displayed categories
+        checkCategorySelection(); // Check if a category is selected
     }
 
     // Redirect to Google Pay when Proceed button is clicked
@@ -244,8 +268,22 @@
         window.location.href = "https://pay.google.com";  // Redirect to Google Pay homepage
     }
 
-    // Initially display the categories when the page loads
+    // Enable/Disable Proceed button based on category selection
+    function checkCategorySelection() {
+        const categories = getCategories();
+        const proceedBtn = document.getElementById('proceedBtn');
+        
+        // Enable button only if at least one category is selected
+        if (categories.length > 0) {
+            proceedBtn.classList.add('enabled');
+        } else {
+            proceedBtn.classList.remove('enabled');
+        }
+    }
+
+    // Initially display the categories and check if a category is selected
     displayCategories();
+    checkCategorySelection(); // Ensure button is correctly enabled/disabled
 </script>
 
 </body>
